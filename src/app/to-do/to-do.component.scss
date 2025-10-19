@@ -1,9 +1,11 @@
 $border-color: #cfcdcd;
+$btn-bg-color: #0e8dd6;
+$btn-bg-color-red: #f41c0f;
+$btn-text-color: #fff;
+$bg-color: #c8c7c7;
 
 .main-box {
-  position: relative;
   width: 500px;
-  height: 250px;
   border: 1px solid $border-color;
   border-radius: 10px;
 
@@ -22,21 +24,73 @@ $border-color: #cfcdcd;
   &__add-btn{
     margin-left: 10px;
     padding: 10px;
+    background-color: $btn-bg-color;
+    color: $btn-text-color;
+    border: 1px solid white;
     border-radius: 5px;
   }
 
-  &__remaining-todos {
+  &__status-btn{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px;
+  }
+
+  &__status-btn-separate {
+    width: 100px;
+    padding: 10px;
+    margin-left: 10px;
+    background-color: $btn-bg-color;
+    color: $btn-text-color;
+    border: 1px solid white;
+    border-radius: 5px;
+  }
+
+  &__todo-list {
+    list-style-type:  none;
+    padding: 5px 20px;
+    margin: 0;
+  }
+
+  &__todo-list-item {
+    background: $bg-color;
+    padding: 10px;
+    border-radius: 5px;
+    position: relative;
+  }
+
+  &__todo-list-item-checked:checked + span {
+    text-decoration: line-through;
+    color: black;
+  }
+
+  &__todo-list-item-remove {
+    position: absolute;
+    right: 15px;
+    color: $btn-bg-color-red;
+  }
+
+  &__status-btn-separate:hover {
+    background-color: #074c77;
+  }
+
+  &__remaining-todos, &__completed-todos {
     text-align: center;
+  }
+
+  &__clear-btn-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 10px;
   }
 
   &__clear-btn {
     padding:  10px;
-    background-color: #1382c5;
-    color: white;
+    background-color: $btn-bg-color-red;
+    color: $btn-text-color;
     border: 1px solid white;
     border-radius: 5px;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
   }
 }
