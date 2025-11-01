@@ -45,6 +45,9 @@ $bg-color: #c8c7c7;
     color: $btn-text-color;
     border: 1px solid white;
     border-radius: 5px;
+    &.active {
+      background-color: #e1b67e;
+    }
   }
 
   &__todo-list {

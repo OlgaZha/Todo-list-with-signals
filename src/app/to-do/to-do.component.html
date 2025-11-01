@@ -1,26 +1,37 @@
 <div class="main-box">
   <h1 class="main-box__title">Angular Signals Todo List</h1>
   <input type="text" placeholder="Add a new todo" [(ngModel)]="newTodo.text" class="main-box__input">
-  <button (click)="addToDo()" class="main-box__add-btn">Add</button>
+  <button (click)="addTodo()" class="main-box__add-btn">Add</button>
 
   <div class="main-box__status-btn">
-    <button class="main-box__status-btn-separate" (click)="filteredTodo()">All</button>
-    <button class="main-box__status-btn-separate" (click)="remainingCount()">Active</button>
-    <button class="main-box__status-btn-separate" (click)="completedCount()">Completed</button>
+    <button class="main-box__status-btn-separate" [class.active]="todoService.filter()==='all' " (click)="todoService.setFilter('all')">All</button>
+    <button class="main-box__status-btn-separate" [class.active]="todoService.filter()==='active' " (click)="todoService.setFilter('active')">Active</button>
+    <button class="main-box__status-btn-separate" [class.active]="todoService.filter()==='completed' " (click)="todoService.setFilter('completed')">Completed</button>
   </div>
 
-  <ul *ngFor="let todo of todos(); let i = index" class="main-box__todo-list">
+  <ul *ngFor="let todo of todoService.filteredTodo(); let i = index" class="main-box__todo-list">
     <li class="main-box__todo-list-item">
-      <input type="checkbox" (click)="updateTodoStatus(i)" class="main-box__todo-list-item-checked">
+      <input type="checkbox" [checked]="todo.isCompleted" (click)="todoService.updateTodoStatus(todo)" class="main-box__todo-list-item-checked">
       <span>{{todo.text}}</span>
-      <span class="main-box__todo-list-item-remove" (click)="removeToDo(i)">X</span>
+      <span class="main-box__todo-list-item-remove" (click)="todoService.removeToDo(i)">X</span>
     </li>
   </ul>
 
-  <p class="main-box__remaining-todos">Remaining Todos: {{remainingCount().length}}</p>
-  <p class="main-box__completed-todos">Completed Todos: {{completedCount().length}}</p>
+  <p class="main-box__remaining-todos">Remaining Todos: {{todoService.remainingCount().length}}</p>
+  <p class="main-box__completed-todos">Completed Todos: {{todoService.completedCount().length}}</p>
   <div class="main-box__clear-btn-container">
-    <button class="main-box__clear-btn" (click)="clearAll()"> Clear All</button>
+    <button class="main-box__clear-btn" (click)="todoService.clearAll()"> Clear All</button>
   </div>
+</div>
 
+<div>
+  <form [formGroup]="todoService.profileForm" (ngSubmit)="onSubmitForm()">
+    <label>Name:</label>
+    <input type="text" formControlName="name">
+    <label>Email:</label>
+    <input type="email" formControlName="email">
+    <button type="submit" [disabled]="todoService.profileStatusSignal()!=='VALID'">Submit</button>
+  </form>
+  <span>{{todoService.nameSignal()}}</span>
+  <span>{{todoService.emailSignal()}}</span>
 </div>
