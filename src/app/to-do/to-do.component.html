@@ -9,29 +9,96 @@
     <button class="main-box__status-btn-separate" [class.active]="todoService.filter()==='completed' " (click)="todoService.setFilter('completed')">Completed</button>
   </div>
 
-  <ul *ngFor="let todo of todoService.filteredTodo(); let i = index" class="main-box__todo-list">
-    <li class="main-box__todo-list-item">
-      <input type="checkbox" [checked]="todo.isCompleted" (click)="todoService.updateTodoStatus(todo)" class="main-box__todo-list-item-checked">
-      <span>{{todo.text}}</span>
-      <span class="main-box__todo-list-item-remove" (click)="todoService.removeToDo(i)">X</span>
-    </li>
+  @switch (todoService.filter()){
+    @case ('all') {
+      <p>Showing all todos</p>
+    }
+    @case ('active') {
+      <p>Showing active todos</p>
+    }
+    @case ('completed') {
+      <p>Showing completed todos</p>
+    }
+    @default {
+      <p>Showing empty state</p>
+    }
+  }
+
+  @if(todoService.remainingList().length === 0  && todoService.completedList().length === 0) {
+    <p>Add the first tast</p>
+  } @else if (todoService.remainingList().length === 0) {
+    <p>All tasks were completed</p>
+  } @else {
+    <p>You still have some tasks</p>
+  }
+
+<!--  <ul *ngFor="let todo of todoService.filteredTodo(); let i = index" class="main-box__todo-list">-->
+<!--    <li class="main-box__todo-list-item">-->
+<!--      <input type="checkbox" [checked]="todo.isCompleted" (click)="todoService.updateTodoStatus(todo)" class="main-box__todo-list-item-checked">-->
+<!--      <span>{{todo.text}}</span>-->
+<!--      <span class="main-box__todo-list-item-remove" (click)="todoService.removeToDo(i)">X</span>-->
+<!--    </li>-->
+<!--  </ul>-->
+
+  <ul class="main-box__todo-list">
+    @for(todo of todoService.filteredTodo(); track $index; let i = $index; let last = $last){
+      <li class="main-box__todo-list-item">
+        @if(!todo.isCompleted) {
+          <input type="checkbox" [checked]="todo.isCompleted" (click)="todoService.updateTodoStatus(todo)" class="main-box__todo-list-item-checked">
+          <span>{{todo.text}}</span>
+          <span class="main-box__todo-list-item-remove" (click)="todoService.removeToDo(i)">X</span>
+          }
+        @else {
+          <input type="checkbox" [checked]="todo.isCompleted" (click)="todoService.updateTodoStatus(todo)" class="main-box__todo-list-item-not-checked">
+          <span>{{todo.text}}</span>
+          <span class="main-box__todo-list-item-remove" (click)="todoService.removeToDo(i)">X</span>
+          }
+      </li>
+    }
   </ul>
 
-  <p class="main-box__remaining-todos">Remaining Todos: {{todoService.remainingCount().length}}</p>
-  <p class="main-box__completed-todos">Completed Todos: {{todoService.completedCount().length}}</p>
   <div class="main-box__clear-btn-container">
     <button class="main-box__clear-btn" (click)="todoService.clearAll()"> Clear All</button>
   </div>
+
+
+@defer (on idle) {
+  <app-todo-statistics></app-todo-statistics>
+} @placeholder {
+  <p>Statistic will load soon</p>
+} @loading {
+  <p>Loading statistic</p>
+} @error {
+  <p>Ooops!</p>
+}
 </div>
 
-<div>
-  <form [formGroup]="todoService.profileForm" (ngSubmit)="onSubmitForm()">
-    <label>Name:</label>
-    <input type="text" formControlName="name">
-    <label>Email:</label>
-    <input type="email" formControlName="email">
-    <button type="submit" [disabled]="todoService.profileStatusSignal()!=='VALID'">Submit</button>
-  </form>
-  <span>{{todoService.nameSignal()}}</span>
-  <span>{{todoService.emailSignal()}}</span>
-</div>
+@defer (on interaction) {
+  <app-profile-form></app-profile-form>
+} @placeholder {
+  <button class="profile-form-btn">Click to load profile form</button>
+} @loading {
+  <p>Loading form</p>
+} @error {
+  <p>Failed to load</p>
+}
+
+@defer (on viewport) {
+  <app-todo-tips></app-todo-tips>
+} @placeholder {
+  <p>Tips are in progress</p>
+} @loading {
+  <p>Tips are loadings</p>
+} @error {
+  <p>Something went wrong</p>
+}
+
+@defer (on idle) {
+  <app-todo-quotes></app-todo-quotes>
+} @placeholder {
+  <p>Quotes will load soon</p>
+} @loading {
+  <p>Loading quotes</p>
+} @error {
+  <p>Failed to load</p>
+}

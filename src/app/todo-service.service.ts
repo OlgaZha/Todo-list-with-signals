@@ -14,8 +14,8 @@ export class TodoServiceService {
   private todos = signal<Todo[]>([]);
   externalTodos = this.todos.asReadonly();
   filter = signal<'all' | 'active' | 'completed'>('all')
-  remainingCount  = computed(() => this.todos().filter(todo => !todo.isCompleted));
-  completedCount = computed(() => this.todos().filter(todo => todo.isCompleted));
+  remainingList  = computed(() => this.todos().filter(todo => !todo.isCompleted));
+  completedList = computed(() => this.todos().filter(todo => todo.isCompleted));
   filteredTodo =  computed(() => {
     switch(this.filter()) {
       case 'active': return this.todos().filter(todo => !todo.isCompleted);

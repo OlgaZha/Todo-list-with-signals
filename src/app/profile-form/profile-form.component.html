@@ -1,0 +1,11 @@
+<div>
+  <form [formGroup]="todoService.profileForm" (ngSubmit)="onSubmitForm()">
+    <label>Name:</label>
+    <input type="text" formControlName="name">
+    <label>Email:</label>
+    <input type="email" formControlName="email">
+    <button type="submit" [disabled]="todoService.profileStatusSignal()!=='VALID'">Submit</button>
+  </form>
+  <span>{{todoService.nameSignal()}}</span>
+  <span>{{todoService.emailSignal()}}</span>
+</div>
