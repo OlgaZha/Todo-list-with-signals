@@ -1,5 +1,5 @@
 $border-color: #cfcdcd;
-$btn-bg-color: #0e8dd6;
+$btn-bg-color: #0e8bd3;
 $btn-bg-color-red: #f41c0f;
 $btn-text-color: #fff;
 $bg-color: #c8c7c7;
@@ -66,14 +66,19 @@ $bg-color: #c8c7c7;
     position: relative;
   }
 
-  &__todo-list-item-checked:checked + span {
+  &__todo-list-item-checked:checked + a {
     color: black;
   }
 
-  &__todo-list-item-not-checked + span {
+  &__todo-list-item-not-checked + a {
     text-decoration: line-through;
     opacity: 0.2;
     color: $btn-bg-color-red;
+  }
+
+  &__todo-details {
+    text-decoration: none;
+    color: inherit;
   }
 
   &__todo-list-item-remove {

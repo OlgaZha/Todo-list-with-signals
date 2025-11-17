@@ -1,18 +1,18 @@
 import {computed, effect, Injectable, Signal, signal} from '@angular/core';
 import {FormBuilder, FormControl, FormControlStatus, FormGroup, Validators} from '@angular/forms';
 import {toSignal} from '@angular/core/rxjs-interop';
-
-export interface Todo {
-  text: string;
-  isCompleted: boolean;
-}
+import {Todo} from './models';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TodoServiceService {
   private todos = signal<Todo[]>([]);
-  externalTodos = this.todos.asReadonly();
+
+  lastAddedTodo = signal<Todo | null>(null);
+
+  lastId = 0;
+
   filter = signal<'all' | 'active' | 'completed'>('all')
   remainingList  = computed(() => this.todos().filter(todo => !todo.isCompleted));
   completedList = computed(() => this.todos().filter(todo => todo.isCompleted));
@@ -42,26 +42,51 @@ export class TodoServiceService {
     this.profileStatusSignal = toSignal(this.profileForm.statusChanges, {initialValue: this.profileForm.status})
   }
 
-  addToDo(newTodo: Todo) {
-    this.todos.update(list => [...list, newTodo]);
+  addToDo(newTodo: Partial<Todo>) {
+    let todo: Todo = {
+      id: ++this.lastId,
+      text: newTodo.text ?? '',
+      isCompleted: false,
+      subtasks: ['task1', 'task2', 'task3'],
+      priority: "Low"
+    }
+    this.todos.update(list => [...list, todo]);
+    this.lastAddedTodo.set(todo);
+
   }
 
-  updateTodoStatus(todo: Todo){
+  updateTodoStatus(todo: Todo| undefined){
+    if(todo) {
     this.todos.update(todos => {
-      todo.isCompleted = !todo.isCompleted;
-      return [...todos];
-    })
+        todo.isCompleted = !todo.isCompleted;
+        return [...todos];
+    })}
+  }
+
+  getTodoById(id: number): Todo | undefined {
+    return this.todos().find(todo => todo.id === id)
   }
 
   setFilter(value: any) {
     this.filter.set(value)
   }
 
+  setPriority(priority: 'Low' | 'Medium' | 'High' | undefined, id?: number) {
+    this.todos.update(todos => {
+      const editedTodo = todos.find(todo => todo.id === id);
+      if(editedTodo) {
+        editedTodo.priority = priority
+      }
+      return [...todos];
+    })
+  }
+
   removeToDo(inputIndex: number): void {
     this.todos.update(list => list.filter((element, index) => index !== inputIndex));
   }
   clearAll(): void {
-    this.todos.set([])
+    this.todos.set([]);
+    this.lastAddedTodo.set(null);
   }
 
   buildProfileForm(): FormGroup {

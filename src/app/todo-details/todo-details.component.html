@@ -1,0 +1,59 @@
+<div class="details-box">
+  <p class="details-box__text">Id: {{todo()?.id}}</p>
+  <p class="details-box__text">Name: {{todo()?.text}} </p>
+  <span class="details-box__text">Status: </span>
+  @if(todo()?.isCompleted) {
+    <span>Completed</span>
+  } @else {
+    <span>Active</span>
+  }
+
+  <div>
+    <button #subtasks class="details-box__btn">Load subtasks</button>
+    @defer (on interaction(subtasks)){
+      @if(todo()?.subtasks?.length){
+        @for (subtask of todo()?.subtasks; track $index; let i = $index) {
+          <p class="details-box__text">{{subtask}}</p>
+        }
+      }
+    } @loading {
+      <p>Loading subtasks...</p>
+    }
+  </div>
+
+
+
+  <div >
+    <button class="details-box__btn" [class.active]="todo()?.priority==='Low' " (click)="setPriority('Low')">Low</button>
+    <button class="details-box__btn" [class.active]="todo()?.priority==='Medium' " (click)="setPriority('Medium')">Medium</button>
+    <button class="details-box__btn" [class.active]="todo()?.priority==='High' " (click)="setPriority('High')">High</button>
+  </div>
+
+  @switch (todo()?.priority) {
+    @case('Low') {
+      <div>Low priority</div>
+    }
+    @case('Medium') {
+      <div>Medium priority</div>
+    }
+    @case ('High') {
+      <div>High priority</div>
+    }
+    @default {
+      <div>Not set</div>
+    }
+  }
+
+  <div>
+    <button (click)="toggleCompleted()" class="details-box__btn">
+      @if(todo()?.isCompleted) {
+        <span>Mark as active</span>
+      } @else {
+        <span>Mark as completed</span>
+      }
+    </button>
+    <button (click)="goBack()" class="details-box__btn details-box__btn-back">Back to list</button>
+  </div>
+
+
+</div>

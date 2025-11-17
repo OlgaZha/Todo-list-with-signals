@@ -1,11 +1,12 @@
-import {Component, computed, effect, signal} from '@angular/core';
+import {Component} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {NgForOf} from '@angular/common';
-import {Todo, TodoServiceService} from '../todo-service.service';
+import {TodoServiceService} from '../todo-service.service';
 import {TodoStatisticsComponent} from '../todo-statistics/todo-statistics.component';
 import {ProfileFormComponent} from '../profile-form/profile-form.component';
 import {TodoTipsComponent} from '../todo-tips/todo-tips.component';
 import {TodoQuotesComponent} from '../todo-quotes/todo-quotes.component';
+import {Todo} from '../models';
+import {RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-to-do',
@@ -15,14 +16,15 @@ import {TodoQuotesComponent} from '../todo-quotes/todo-quotes.component';
     TodoStatisticsComponent,
     ProfileFormComponent,
     TodoTipsComponent,
-    TodoQuotesComponent
+    TodoQuotesComponent,
+    RouterLink
   ],
   templateUrl: './to-do.component.html',
   styleUrl: './to-do.component.scss'
 })
 
 export class ToDoComponent {
-  newTodo: Todo = {
+  newTodo =  {
     text: '',
     isCompleted: false,
   };
@@ -37,4 +39,5 @@ export class ToDoComponent {
     };
   }
 
+  protected readonly TodoServiceService = TodoServiceService;
 }

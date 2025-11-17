@@ -9,6 +9,10 @@
     <button class="main-box__status-btn-separate" [class.active]="todoService.filter()==='completed' " (click)="todoService.setFilter('completed')">Completed</button>
   </div>
 
+  @if(todoService.lastAddedTodo() !== null) {
+    <p>This is last added todo: {{todoService.lastAddedTodo()?.text}}</p>
+  }
+
   @switch (todoService.filter()){
     @case ('all') {
       <p>Showing all todos</p>
@@ -25,7 +29,7 @@
   }
 
   @if(todoService.remainingList().length === 0  && todoService.completedList().length === 0) {
-    <p>Add the first tast</p>
+    <p>Add the first task</p>
   } @else if (todoService.remainingList().length === 0) {
     <p>All tasks were completed</p>
   } @else {
@@ -45,12 +49,12 @@
       <li class="main-box__todo-list-item">
         @if(!todo.isCompleted) {
           <input type="checkbox" [checked]="todo.isCompleted" (click)="todoService.updateTodoStatus(todo)" class="main-box__todo-list-item-checked">
-          <span>{{todo.text}}</span>
+          <a [routerLink]="['/todo', todo.id]" class="main-box__todo-details">{{todo.text}}</a>
           <span class="main-box__todo-list-item-remove" (click)="todoService.removeToDo(i)">X</span>
           }
         @else {
           <input type="checkbox" [checked]="todo.isCompleted" (click)="todoService.updateTodoStatus(todo)" class="main-box__todo-list-item-not-checked">
-          <span>{{todo.text}}</span>
+          <a [routerLink]="['/todo', todo.id]">{{todo.text}}</a>
           <span class="main-box__todo-list-item-remove" (click)="todoService.removeToDo(i)">X</span>
           }
       </li>
