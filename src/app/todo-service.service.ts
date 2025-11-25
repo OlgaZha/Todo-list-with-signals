@@ -11,7 +11,11 @@ export class TodoServiceService {
 
   lastAddedTodo = signal<Todo | null>(null);
 
+  motivationEvents = signal(0);
+
   lastId = 0;
+  previousLength = 0;
+  addFinal = 0;
 
   filter = signal<'all' | 'active' | 'completed'>('all')
   remainingList  = computed(() => this.todos().filter(todo => !todo.isCompleted));
@@ -40,6 +44,8 @@ export class TodoServiceService {
     this.nameSignal = this.toSignalWithInitial('name');
     this.emailSignal = this.toSignalWithInitial('email');
     this.profileStatusSignal = toSignal(this.profileForm.statusChanges, {initialValue: this.profileForm.status})
+
+    this.registerMotivationEffect()
   }
 
   addToDo(newTodo: Partial<Todo>) {
@@ -52,15 +58,14 @@ export class TodoServiceService {
     }
     this.todos.update(list => [...list, todo]);
     this.lastAddedTodo.set(todo);
-
   }
 
   updateTodoStatus(todo: Todo| undefined){
     if(todo) {
-    this.todos.update(todos => {
-        todo.isCompleted = !todo.isCompleted;
-        return [...todos];
-    })}
+      this.todos.update(copyTodos => {
+        return copyTodos.map(t => t.id === todo.id ? {...t, isCompleted: !t.isCompleted} : t)
+      })
+    }
   }
 
   getTodoById(id: number): Todo | undefined {
@@ -87,6 +92,38 @@ export class TodoServiceService {
   clearAll(): void {
     this.todos.set([]);
     this.lastAddedTodo.set(null);
+  }
+
+  addNewSubtask(id: number | undefined, addedSubtask: string): void {
+    this.todos.update(todos => {
+      const todo = todos.find(element => element.id === id)
+      if(todo) {
+        todo.subtasks?.push(addedSubtask);
+      }
+      return [...todos];
+    })
+  }
+
+  private registerMotivationEffect() {
+    effect(() => {
+      let todos = this.todos();
+      let currentLength = todos.length;
+      if(currentLength > this.previousLength) {
+        let lastTodo = todos[currentLength - 1];
+        if(lastTodo && !lastTodo.isCompleted) {
+          this.addFinal++;
+          if(this.addFinal === 3) {
+            this.motivationEvents.update(n => n+1)
+            this.addFinal = 0;
+          }
+        } else {
+          this.addFinal = 0;
+        }
+      } else {
+        this.addFinal = 0;
+      }
+      this.previousLength = currentLength;
+    });
   }
 
   buildProfileForm(): FormGroup {

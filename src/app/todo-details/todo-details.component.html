@@ -15,6 +15,8 @@
         @for (subtask of todo()?.subtasks; track $index; let i = $index) {
           <p class="details-box__text">{{subtask}}</p>
         }
+        <input [(ngModel)]="newSubtask" />
+        <button (click)="addSubtask()" class="details-box__btn">Add subtask</button>
       }
     } @loading {
       <p>Loading subtasks...</p>
