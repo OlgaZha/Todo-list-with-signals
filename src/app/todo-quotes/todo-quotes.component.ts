@@ -11,6 +11,11 @@ export class TodoQuotesComponent {
   todoService = inject(TodoServiceService)
   constructor() {
     this.showRandomQuote()
+    effect(() => {
+      if(this.todoService.motivationEvents() > 0) {
+        this.showRandomQuote()
+      }
+    });
   }
 
   randomQuote = signal<string>('')
@@ -29,5 +34,6 @@ export class TodoQuotesComponent {
   showRandomQuote() {
     const id = Math.floor(Math.random() * this.quotes.length);
     this.randomQuote.update(() => this.quotes[id]);
+    console.log(id)
   }
 }
